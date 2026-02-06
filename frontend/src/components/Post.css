@@ -1,0 +1,30 @@
+.post-container {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.post-actions {
+  display: flex;
+  border-top: 1px solid #E4E6EB;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.post-action-button {
+  flex: 1;
+  text-transform: none;
+  color: #65676B;
+}
+
+.post-action-button:hover {
+  background-color: #F2F2F2;
+}

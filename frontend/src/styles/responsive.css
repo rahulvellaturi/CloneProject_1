@@ -1,0 +1,57 @@
+/* Responsive Design */
+
+/* Mobile devices */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .header-search {
+    display: none;
+  }
+
+  .create-post-container {
+    padding: 12px;
+  }
+
+  .post-container {
+    padding: 12px;
+  }
+
+  .profile-cover {
+    height: 200px;
+  }
+
+  .profile-avatar {
+    width: 100px !important;
+    height: 100px !important;
+  }
+}
+
+/* Tablet devices */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sidebar {
+    width: 200px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+/* Hide elements on mobile */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+/* Show elements only on mobile */
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
