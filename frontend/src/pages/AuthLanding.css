@@ -1,0 +1,119 @@
+.auth-bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(145deg, #e8eef8 0%, #f0f2f5 35%, #dce8f7 70%, #eef2fa 100%);
+  background-size: 200% 200%;
+  animation: auth-gradient-shift 18s ease-in-out infinite;
+}
+
+@keyframes auth-gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 40%;
+  }
+  50% {
+    background-position: 100% 60%;
+  }
+}
+
+.auth-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(48px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.auth-orb-1 {
+  width: min(55vw, 420px);
+  height: min(55vw, 420px);
+  background: radial-gradient(circle at 30% 30%, rgba(24, 119, 242, 0.45), rgba(66, 183, 42, 0.15));
+  top: -8%;
+  left: -5%;
+  animation: auth-float-a 14s ease-in-out infinite;
+}
+
+.auth-orb-2 {
+  width: min(45vw, 360px);
+  height: min(45vw, 360px);
+  background: radial-gradient(circle at 70% 70%, rgba(66, 183, 42, 0.35), rgba(24, 119, 242, 0.12));
+  bottom: 5%;
+  left: 20%;
+  animation: auth-float-b 16s ease-in-out infinite;
+}
+
+.auth-orb-3 {
+  width: min(40vw, 320px);
+  height: min(40vw, 320px);
+  background: radial-gradient(circle at 50% 50%, rgba(147, 112, 219, 0.25), rgba(24, 119, 242, 0.1));
+  top: 35%;
+  right: -8%;
+  animation: auth-float-c 12s ease-in-out infinite;
+}
+
+@keyframes auth-float-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(24px, 18px) scale(1.06);
+  }
+}
+
+@keyframes auth-float-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-20px, -28px) scale(1.05);
+  }
+}
+
+@keyframes auth-float-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-16px, 22px) scale(1.08);
+  }
+}
+
+.auth-grid-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: linear-gradient(rgba(24, 119, 242, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 119, 242, 0.35) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: auth-grid-drift 40s linear infinite;
+}
+
+@keyframes auth-grid-drift {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(48px, 48px);
+  }
+}
+
+.auth-content-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-fb-header {
+  background: linear-gradient(180deg, #3b5998 0%, #365899 100%);
+  border-bottom: 1px solid #29487d;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.auth-illustration {
+  filter: drop-shadow(0 12px 24px rgba(24, 119, 242, 0.15));
+}
