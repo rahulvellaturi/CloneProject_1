@@ -20,6 +20,11 @@ import { login, register, clearError } from '../store/slices/authSlice';
 import FacebookWordmark from '../components/FacebookWordmark';
 import './AuthLanding.css';
 
+function daysInMonth(month, year) {
+  if (!month || !year) return 31;
+  return new Date(Number(year), Number(month), 0).getDate();
+}
+
 const MONTHS = [
   { v: '01', label: 'Jan' },
   { v: '02', label: 'Feb' },
@@ -122,8 +127,6 @@ const AuthLanding = () => {
     return Array.from({ length: 100 }, (_, i) => String(y - 13 - i));
   }, []);
 
-  const days = useMemo(() => Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0')), []);
-
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [loginErr, setLoginErr] = useState(null);
   const [loginBusy, setLoginBusy] = useState(false);
@@ -139,6 +142,23 @@ const AuthLanding = () => {
     birthYear: '',
     gender: '',
   });
+
+  const days = useMemo(() => {
+    const count = daysInMonth(regForm.birthMonth, regForm.birthYear);
+    return Array.from({ length: count }, (_, i) => String(i + 1).padStart(2, '0'));
+  }, [regForm.birthMonth, regForm.birthYear]);
+
+  useEffect(() => {
+    if (!regForm.birthDay || !regForm.birthMonth || !regForm.birthYear) return;
+    const maxDay = daysInMonth(regForm.birthMonth, regForm.birthYear);
+    if (Number(regForm.birthDay) > maxDay) {
+      setRegForm((prev) => ({
+        ...prev,
+        birthDay: String(maxDay).padStart(2, '0'),
+      }));
+    }
+  }, [regForm.birthMonth, regForm.birthYear, regForm.birthDay]);
+
   const [regErr, setRegErr] = useState(null);
   const [regBusy, setRegBusy] = useState(false);
   const [enableParallax, setEnableParallax] = useState(false);
