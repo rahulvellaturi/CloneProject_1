@@ -4,7 +4,7 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn -q -B dependency:go-offline
 COPY src ./src
-RUN mvn -q -B package -DskipTests
+RUN mvn -B package -DskipTests
 
 # Runtime stage
 FROM eclipse-temurin:17-jre-alpine
