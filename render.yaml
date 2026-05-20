@@ -32,7 +32,7 @@ services:
   - type: web
     name: facebook-clone-web
     runtime: static
-    buildCommand: cd frontend && npm ci && npm run build
+    buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/build
     envVars:
       - key: CI
