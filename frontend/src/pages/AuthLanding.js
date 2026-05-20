@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { motion, useSpring, useTransform } from 'framer-motion';
 import { login, register, clearError } from '../store/slices/authSlice';
+import FacebookWordmark from '../components/FacebookWordmark';
 import './AuthLanding.css';
 
 const MONTHS = [
@@ -140,16 +141,26 @@ const AuthLanding = () => {
   });
   const [regErr, setRegErr] = useState(null);
   const [regBusy, setRegBusy] = useState(false);
+  const [enableParallax, setEnableParallax] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 900px) and (prefers-reduced-motion: no-preference)');
+    const update = () => setEnableParallax(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   const onMouseMove = useCallback(
     (e) => {
+      if (!enableParallax) return;
       const x = e.clientX / window.innerWidth - 0.5;
       const y = e.clientY / window.innerHeight - 0.5;
       setMouse({ x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight });
-      springX.set(x * 56);
-      springY.set(y * 40);
+      springX.set(x * 32);
+      springY.set(y * 24);
     },
-    [springX, springY]
+    [springX, springY, enableParallax]
   );
 
   const handleLoginChange = (e) => {
@@ -216,109 +227,63 @@ const AuthLanding = () => {
     }
   };
 
+  const heroShift = enableParallax
+    ? { transform: `translate(${(mouse.x - 0.5) * 8}px, ${(mouse.y - 0.5) * 6}px)` }
+    : undefined;
+
   return (
-    <Box
-      onMouseMove={onMouseMove}
-      sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}
-    >
+    <Box className="auth-page" onMouseMove={onMouseMove}>
       <div className="auth-bg-layer" aria-hidden>
-        <motion.div className="auth-orb auth-orb-1" style={{ x: orb1x, y: orb1y }} />
-        <motion.div className="auth-orb auth-orb-2" style={{ x: orb2x, y: orb2y }} />
-        <motion.div className="auth-orb auth-orb-3" style={{ x: orb3x, y: orb3y }} />
+        {enableParallax && (
+          <>
+            <motion.div className="auth-orb auth-orb-1" style={{ x: orb1x, y: orb1y }} />
+            <motion.div className="auth-orb auth-orb-2" style={{ x: orb2x, y: orb2y }} />
+            <motion.div className="auth-orb auth-orb-3" style={{ x: orb3x, y: orb3y }} />
+          </>
+        )}
         <div className="auth-grid-overlay" />
       </div>
 
       <Box component="header" className="auth-fb-header auth-content-wrap">
-        <Box
-          sx={{
-            maxWidth: 980,
-            mx: 'auto',
-            px: 2,
-            py: 1.25,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 2,
-          }}
-        >
-          <Typography
-            component="span"
-            sx={{
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: { xs: '2rem', sm: '2.4rem' },
-              letterSpacing: '-0.5px',
-              fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif',
-            }}
-          >
-            facebook
-          </Typography>
+        <div className="auth-header-inner">
+          <a href="/login" className="auth-logo" aria-label="Facebook home">
+            <FacebookWordmark className="auth-logo-svg" />
+          </a>
 
-          <Box
-            component="form"
-            onSubmit={handleLogin}
-            sx={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              gap: 1.25,
-              flexWrap: 'wrap',
-            }}
-          >
-            <Box>
-              <Typography sx={{ color: '#fff', fontSize: 12, mb: 0.25 }}>Email or Phone</Typography>
+          <Box component="form" className="auth-login-form" onSubmit={handleLogin}>
+            <div className="auth-login-field">
+              <span className="auth-login-label">Email or Phone</span>
               <TextField
+                className="auth-header-input"
                 name="email"
                 value={loginForm.email}
                 onChange={handleLoginChange}
                 size="small"
                 type="email"
                 autoComplete="username"
-                sx={{
-                  width: 164,
-                  bgcolor: '#fff',
-                  '& .MuiOutlinedInput-root': { height: 24, fontSize: 13 },
-                }}
+                hiddenLabel
               />
-            </Box>
-            <Box>
-              <Typography sx={{ color: '#fff', fontSize: 12, mb: 0.25 }}>Password</Typography>
+            </div>
+            <div className="auth-login-field">
+              <span className="auth-login-label">Password</span>
               <TextField
+                className="auth-header-input"
                 name="password"
                 value={loginForm.password}
                 onChange={handleLoginChange}
                 size="small"
                 type="password"
                 autoComplete="current-password"
-                sx={{
-                  width: 164,
-                  bgcolor: '#fff',
-                  '& .MuiOutlinedInput-root': { height: 24, fontSize: 13 },
-                }}
+                hiddenLabel
               />
-            </Box>
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={loginBusy}
-              sx={{
-                bgcolor: '#4267b2',
-                color: '#fff',
-                fontSize: 12,
-                fontWeight: 700,
-                py: 0.25,
-                px: 1.5,
-                minWidth: 50,
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2)',
-                '&:hover': { bgcolor: '#365899' },
-              }}
-            >
+            </div>
+            <Button type="submit" variant="contained" className="auth-login-btn" disabled={loginBusy}>
               Log In
             </Button>
           </Box>
-        </Box>
+        </div>
         {loginErr && (
-          <Box sx={{ maxWidth: 980, mx: 'auto', px: 2, pb: 1 }}>
+          <Box className="auth-header-error">
             <Alert severity="error" sx={{ py: 0 }}>
               {loginErr}
             </Alert>
@@ -326,63 +291,38 @@ const AuthLanding = () => {
         )}
       </Box>
 
-      <Box
-        component="main"
-        className="auth-content-wrap"
-        sx={{
-          flex: 1,
-          py: { xs: 3, md: 5 },
-          px: 2,
-        }}
-      >
-        <Box
-          sx={{
-            maxWidth: 980,
-            mx: 'auto',
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            alignItems: { xs: 'center', md: 'flex-start' },
-            justifyContent: 'space-between',
-            gap: { xs: 4, md: 6 },
-          }}
-        >
-          <Box sx={{ flex: 1, maxWidth: 520, pr: { md: 2 } }}>
+      <Box component="main" className="auth-main auth-content-wrap">
+        <div className="auth-main-inner">
+          <section className="auth-hero">
             <motion.div
-              initial={{ opacity: 0, x: -16 }}
+              initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.45 }}
-              style={{
-                transform: `translate(${(mouse.x - 0.5) * 12}px, ${(mouse.y - 0.5) * 8}px)`,
-              }}
+              transition={{ duration: 0.4 }}
+              style={heroShift}
             >
-              <LikeIllustration />
-              <Typography
-                sx={{
-                  mt: 2,
-                  fontSize: { xs: '1.35rem', sm: '1.6rem' },
-                  fontWeight: 700,
-                  color: '#1877F2',
-                  lineHeight: 1.3,
-                }}
-              >
+              <div className="auth-illustration-wrap">
+                <LikeIllustration />
+              </div>
+              <Typography component="p" className="auth-hero-title">
                 Thanks for stopping by!
               </Typography>
-              <Typography sx={{ mt: 0.5, fontSize: '1.05rem', color: '#1c1e21' }}>
+              <Typography component="p" className="auth-hero-subtitle">
                 We hope to see you again soon.
               </Typography>
             </motion.div>
-          </Box>
+          </section>
 
-          <Box sx={{ width: '100%', maxWidth: 432 }}>
+          <section className="auth-signup-panel">
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.08 }}
+              transition={{ duration: 0.4, delay: 0.06 }}
+              className="auth-signup-card"
             >
-              <Typography sx={{ fontSize: '2.1rem', fontWeight: 600, color: '#1c1e21' }}>
+              <Typography component="h2" className="auth-signup-title">
                 Create an account
               </Typography>
-              <Typography sx={{ mt: 0.5, mb: 2, color: '#606770', fontSize: '1.05rem' }}>
+              <Typography component="p" className="auth-signup-subtitle">
                 It&apos;s free and always will be.
               </Typography>
 
@@ -393,8 +333,8 @@ const AuthLanding = () => {
               )}
 
               <Box component="form" onSubmit={handleRegister}>
-                <Grid container spacing={1.5}>
-                  <Grid item xs={6}>
+                <Grid container spacing={1.75}>
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
                       name="firstName"
@@ -406,7 +346,7 @@ const AuthLanding = () => {
                       sx={{ bgcolor: '#fff' }}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
                       name="lastName"
@@ -462,8 +402,9 @@ const AuthLanding = () => {
                     <Typography sx={{ fontSize: 13, fontWeight: 600, color: '#606770', mb: 0.5 }}>
                       Birthday
                     </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-                      <FormControl size="small" sx={{ minWidth: 110, bgcolor: '#fff' }}>
+                    <Box className="auth-birthday-row">
+                      <Box className="auth-birthday-selects">
+                      <FormControl size="small" sx={{ flex: '1 1 110px', minWidth: 0, bgcolor: '#fff' }}>
                         <TextField
                           select
                           name="birthMonth"
@@ -480,7 +421,7 @@ const AuthLanding = () => {
                           ))}
                         </TextField>
                       </FormControl>
-                      <FormControl size="small" sx={{ minWidth: 76, bgcolor: '#fff' }}>
+                      <FormControl size="small" sx={{ flex: '1 1 72px', minWidth: 0, bgcolor: '#fff' }}>
                         <TextField
                           select
                           name="birthDay"
@@ -497,7 +438,7 @@ const AuthLanding = () => {
                           ))}
                         </TextField>
                       </FormControl>
-                      <FormControl size="small" sx={{ minWidth: 92, bgcolor: '#fff' }}>
+                      <FormControl size="small" sx={{ flex: '1 1 88px', minWidth: 0, bgcolor: '#fff' }}>
                         <TextField
                           select
                           name="birthYear"
@@ -514,10 +455,11 @@ const AuthLanding = () => {
                           ))}
                         </TextField>
                       </FormControl>
+                      </Box>
                       <Link
                         href="#"
                         onClick={(e) => e.preventDefault()}
-                        sx={{ fontSize: 11, maxWidth: 160, lineHeight: 1.2 }}
+                        className="auth-birthday-hint"
                       >
                         Why do I need to provide my date of birth?
                       </Link>
@@ -573,8 +515,8 @@ const AuthLanding = () => {
                 </Grid>
               </Box>
             </motion.div>
-          </Box>
-        </Box>
+          </section>
+        </div>
       </Box>
     </Box>
   );
