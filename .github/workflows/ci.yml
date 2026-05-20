@@ -3,7 +3,7 @@ name: CI
 
 on:
   push:
-    branches: [main, develop, "cursor/**"]
+    branches: [main, develop, "cursor/**", "feat/**"]
   pull_request:
     branches: [main, develop]
 

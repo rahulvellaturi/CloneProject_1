@@ -1,0 +1,73 @@
+# Reports a GitHub deployment for PR branches so "This branch has not been deployed" clears
+# after CI passes. For a live preview URL, enable Render PR previews (render.yaml) and
+# connect the repo in the Render dashboard with GitHub.
+name: PR Preview
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  deployments: write
+  pull-requests: read
+
+concurrency:
+  group: pr-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment:
+      name: preview-pr-${{ github.event.pull_request.number }}
+      url: ${{ steps.preview-url.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Build backend
+        working-directory: backend
+        run: mvn -B package -DskipTests
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          CI: "false"
+          REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL || 'https://facebook-clone-api-uaqm.onrender.com/api' }}
+        run: |
+          npm install --no-fund --no-audit
+          npm test -- --watchAll=false --passWithNoTests
+          npm run build
+
+      - name: Resolve preview URL
+        id: preview-url
+        env:
+          RENDER_PREVIEW_WEB_URL: ${{ vars.RENDER_PREVIEW_WEB_URL }}
+        run: |
+          if [ -n "$RENDER_PREVIEW_WEB_URL" ]; then
+            echo "url=$RENDER_PREVIEW_WEB_URL" >> "$GITHUB_OUTPUT"
+          else
+            echo "url=https://facebook-clone-web.onrender.com" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger Render deploy hook (optional)
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "$RENDER_DEPLOY_HOOK_URL" ]; then
+            curl -fsS -X POST "$RENDER_DEPLOY_HOOK_URL"
+          fi
