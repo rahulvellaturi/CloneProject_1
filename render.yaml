@@ -3,10 +3,16 @@
 # 1. Connect GitHub repo in Render Dashboard
 # 2. Use Neon (neon.tech) for free PostgreSQL — paste connection into env vars below
 # 3. Apply blueprint or create services manually from this file
+# 4. PR previews: sync blueprint, then open a PR — Render posts preview URLs to GitHub
+
+previews:
+  generation: automatic
 
 services:
   - type: web
     name: facebook-clone-api
+    previews:
+      generation: automatic
     runtime: docker
     region: oregon
     plan: free
@@ -31,6 +37,8 @@ services:
 
   - type: web
     name: facebook-clone-web
+    previews:
+      generation: automatic
     runtime: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/build
