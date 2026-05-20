@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: facebook-clone-config
+  namespace: facebook-clone
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  APP_UPLOAD_DIR: "/app/uploads"
+  # Set APP_ALLOWED_ORIGINS to your public frontend URL(s), comma-separated
+  APP_ALLOWED_ORIGINS: "http://localhost:3000"

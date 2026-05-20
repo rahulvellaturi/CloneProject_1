@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facebook-clone-api
+  namespace: facebook-clone
+  labels:
+    app: facebook-clone-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: facebook-clone-api
+  template:
+    metadata:
+      labels:
+        app: facebook-clone-api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/YOUR_GITHUB_USER/facebook-clone-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: facebook-clone-config
+            - secretRef:
+                name: facebook-clone-secrets
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: facebook-clone-api
+  namespace: facebook-clone
+spec:
+  selector:
+    app: facebook-clone-api
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
