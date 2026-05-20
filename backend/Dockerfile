@@ -13,6 +13,7 @@ WORKDIR /app
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
 COPY --from=build /app/target/*.jar app.jar
-RUN mkdir -p /app/uploads
+RUN mkdir -p /app/uploads && chown -R spring:spring /app/uploads
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENV PORT=8080
+ENTRYPOINT ["sh", "-c", "java -jar -Dserver.port=${PORT} app.jar"]

@@ -35,6 +35,8 @@ services:
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/build
     envVars:
+      - key: CI
+        value: "false"
       - key: REACT_APP_API_URL
         sync: false
     routes:
