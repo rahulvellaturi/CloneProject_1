@@ -15,4 +15,5 @@ COPY --from=build /app/target/*.jar app.jar
 RUN mkdir -p /app/uploads && chown -R spring:spring /app
 USER spring:spring
 EXPOSE 8080
+ENV SPRING_PROFILES_ACTIVE=prod
 ENTRYPOINT ["java", "-jar", "app.jar"]

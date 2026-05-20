@@ -1,9 +1,13 @@
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:?SPRING_DATASOURCE_URL is required (Neon JDBC URL)}
+    url: ${SPRING_DATASOURCE_URL:?SPRING_DATASOURCE_URL is required}
     username: ${SPRING_DATASOURCE_USERNAME:?SPRING_DATASOURCE_USERNAME is required}
     password: ${SPRING_DATASOURCE_PASSWORD:?SPRING_DATASOURCE_PASSWORD is required}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 60000
+      initialization-fail-timeout: 120000
+      maximum-pool-size: 5
   jpa:
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
