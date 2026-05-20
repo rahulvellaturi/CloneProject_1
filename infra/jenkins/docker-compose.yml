@@ -1,0 +1,21 @@
+# Free local Jenkins (LTS) with Docker access for pipeline builds
+# Usage: docker compose -f infra/jenkins/docker-compose.yml up -d
+# UI: http://localhost:8081 (admin password in container logs)
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: facebook-clone-jenkins
+    user: root
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:

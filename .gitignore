@@ -24,6 +24,9 @@ backend/target/
 .env.test.local
 .env.production.local
 backend/.env
+k8s/secrets.yaml
+infra/cloud-env.local.txt
+.env
 
 # Logs
 logs/

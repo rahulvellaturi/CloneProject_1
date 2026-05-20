@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 60000
+      initialization-fail-timeout: 120000
+      maximum-pool-size: 5
+  jpa:
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  allowed-origins: ${APP_ALLOWED_ORIGINS}
+  upload-dir: ${APP_UPLOAD_DIR:./uploads}
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework

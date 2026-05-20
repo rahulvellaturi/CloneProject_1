@@ -3,9 +3,9 @@ spring:
     name: facebook-clone-backend
   
   datasource:
-    url: jdbc:postgresql://localhost:5432/facebook_clone
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/facebook_clone}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   
   jpa:
@@ -33,8 +33,8 @@ jwt:
   expiration: 86400000 # 24 hours
 
 app:
-  upload-dir: ./uploads
-  allowed-origins: http://localhost:3000,http://localhost:3001
+  upload-dir: ${APP_UPLOAD_DIR:./uploads}
+  allowed-origins: ${APP_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:3001,http://localhost:3002}
 
 logging:
   level:

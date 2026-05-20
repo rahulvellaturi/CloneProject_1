@@ -54,6 +54,19 @@ bfy/
 └── docker-compose.yml # Database setup
 ```
 
+## Infrastructure (free tier — live deployment)
+
+Full guide: **[infra/DEPLOYMENT.md](infra/DEPLOYMENT.md)**
+
+| Component | Quick start |
+|-----------|-------------|
+| **Local (Docker)** | `docker compose up --build` → http://localhost:3000 |
+| **DB (cloud free)** | [Neon](https://neon.tech) PostgreSQL |
+| **Cloud** | [Render](https://render.com) + `render.yaml` blueprint |
+| **CI/CD** | GitHub Actions (`.github/workflows/ci.yml`) |
+| **Jenkins** | `docker compose -f infra/jenkins/docker-compose.yml up -d` |
+| **Kubernetes** | `k8s/` manifests + `scripts/k8s-local.ps1` |
+
 ## Getting Started
 
 ### Prerequisites
